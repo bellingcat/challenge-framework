@@ -1,0 +1,19 @@
+metadata:
+    challenge: Example Challenge
+    id: 3
+    publishDate: "2025-01-01"
+    unlockDate: "2025-01-04"
+unencryptedContent:
+    title: The fourth challenge
+    description: It is an example challenge!
+    image_url: >-
+        ExampleImage4.jpg
+    full_text: >-
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat
+    final_question: What is the Duis aute irure dolor in reprehenderit?
+    image_caption: An example picture caption.
+    author: Bellingcat
+    author_link: "https://www.bellingcat.com"
+answer: Answer4

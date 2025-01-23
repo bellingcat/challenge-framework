@@ -1,0 +1,30 @@
+{
+    "name": "advent",
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "prebuild": "node src/puzzleParser.js",
+        "build": "vite build",
+        "preview": "vite preview",
+        "format": "prettier --write ."
+    },
+    "dependencies": {
+        "@mdi/font": "7.4.47",
+        "@vueuse/core": "^11.2.0",
+        "crypto-js": "^4.2.0",
+        "roboto-fontface": "*",
+        "vue": "^3.4.31",
+        "vuetify": "^3.6.11",
+        "yaml-front-matter": "^4.1.1"
+    },
+    "devDependencies": {
+        "@modyfi/vite-plugin-yaml": "^1.1.0",
+        "@vitejs/plugin-vue": "^5.0.5",
+        "prettier": "3.4.2",
+        "sass": "1.77.6",
+        "unplugin-fonts": "^1.1.1",
+        "unplugin-vue-components": "^0.27.2",
+        "vite": "^5.3.3",
+        "vite-plugin-vuetify": "^2.0.3"
+    }
+}
