@@ -143,8 +143,12 @@ function handleSolve(userSolution) {
             const encryptedContent =
                 challenges.value[currentChallenge].puzzles[nextPuzzle]
                     .encryptedContent;
+            const encryptedSecret =
+                challenges.value[currentChallenge].puzzles[currentPuzzle]
+                    .encryptedSecret;
+            const unencryptedSecret = decrypt(encryptedSecret, userSolution);
             const unencryptedContent = JSON.parse(
-                decrypt(encryptedContent, userSolution),
+                decrypt(encryptedContent, unencryptedSecret),
             );
             challenges.value[currentChallenge].puzzles[
                 nextPuzzle

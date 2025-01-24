@@ -1,5 +1,5 @@
 // Script to take all raw Puzzle files and encrypt their contents
-// using the answer form the previous puzzle (the first puzzle is not encrypted)
+// using the secret from the previous puzzle (the first puzzle is not encrypted)
 // Also add a field to each puzzle that is encrypted with the answer to the puzzle
 // For checking the answer to the puzzle
 const fs = require("fs");
@@ -53,10 +53,10 @@ for (const challenge of Object.values(challenges)) {
         if (id === "0" || unlockDate <= today) {
             newPuzzle.unencryptedContent = rawPuzzle.unencryptedContent;
         } else {
-            const previousAnswer = rawPuzzles[id - 1].answer;
+            const previousSecret = rawPuzzles[id - 1].secret;
             newPuzzle.encryptedContent = CryptoJS.AES.encrypt(
                 JSON.stringify(rawPuzzle.unencryptedContent),
-                previousAnswer
+                previousSecret
                     .toLowerCase()
                     .normalize("NFD")
                     .replace(/\p{Diacritic}/gu, ""),
@@ -66,6 +66,15 @@ for (const challenge of Object.values(challenges)) {
         // Add the answer check
         newPuzzle.answerCheck = CryptoJS.AES.encrypt(
             JSON.stringify("Answer Correct"),
+            rawPuzzle.answer
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/\p{Diacritic}/gu, ""),
+        ).toString();
+
+        // Add the encrypted secret
+        newPuzzle.encryptedSecret = CryptoJS.AES.encrypt(
+            rawPuzzle.secret,
             rawPuzzle.answer
                 .toLowerCase()
                 .normalize("NFD")
