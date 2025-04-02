@@ -106,6 +106,11 @@
                             </v-btn>
                         </template>
                     </v-text-field>
+                    <template v-if="metadata.solved">
+                        <puzzle-share
+                            :puzzle-title="puzzle.title"
+                        ></puzzle-share>
+                    </template>
                 </v-container>
             </v-col>
         </v-row>

@@ -1,5 +1,5 @@
 <template>
-    <v-row :key="renderKey" class="mx-1 my-2">
+    <v-row class="mx-1 my-2">
         <template v-for="(challenge, index) in challengesList" :key="index">
             <ChallengeRow :challenge="challenge" />
         </template>
@@ -27,7 +27,6 @@ const challengesList = computed(() =>
         return bDate - aDate;
     }),
 );
-const renderKey = ref(0);
 onMounted(() => run_on_mount_and_update());
 onUpdated(() => run_on_mount_and_update());
 
@@ -96,14 +95,5 @@ function run_on_mount_and_update() {
             }
         }
     }
-    // watch the challenges object for deep changes
-    watch(
-        () => challenges.value,
-        (newChallenges) => {
-            // rerender the component by incrementing the renderKey
-            renderKey.value += 1;
-        },
-        { deep: true },
-    );
 }
 </script>

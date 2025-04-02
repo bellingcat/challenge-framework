@@ -6,7 +6,9 @@
 
 // Styles
 import "@mdi/font/css/materialdesignicons.css";
+import "@fortawesome/fontawesome-free/css/all.css";
 import "vuetify/styles";
+import { aliases, fa } from "vuetify/iconsets/fa";
 
 // Composables
 import { createVuetify } from "vuetify";
@@ -59,6 +61,12 @@ export default createVuetify({
         defaultTheme: "bellingcatDarkTheme",
         themes: {
             bellingcatDarkTheme,
+        },
+    },
+    icons: {
+        aliases,
+        sets: {
+            fa,
         },
     },
 });

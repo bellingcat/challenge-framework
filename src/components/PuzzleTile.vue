@@ -55,52 +55,44 @@
 import { ref, computed } from "vue";
 import CryptoJS from "crypto-js";
 import { useChallenges } from "@/composables/useChallenges";
+
 const challenges = useChallenges();
 const props = defineProps({
     puzzle: Object,
 });
 
-const locked = ref(true);
-const solved = ref(false);
+const puzzle = computed(() => props.puzzle);
+const locked = computed(() => puzzle.value.unencryptedContent === undefined);
+
 const puzzleActive = ref(false);
 const errorMessage = ref("");
+const solved = ref(puzzle.value.metadata.solved === true);
 
-// If unencryptedContent is present, the puzzle is unlocked
-if (props.puzzle.unencryptedContent) {
-    locked.value = false;
-}
-
-// If the puzzle was already solved, set solved to true
-if (props.puzzle.metadata.solved === true) {
-    solved.value = true;
-}
-
-const unlockDate =
-    props.puzzle.metadata.unlockDate === undefined
-        ? false
-        : new Date(props.puzzle.metadata.unlockDate);
-
-// Define computed properties for the image URL, title, and teaser
 const imageUrl = computed(() =>
     locked.value === true
         ? "locked.jpg"
-        : props.puzzle.unencryptedContent.image_url || "locked.jpg",
+        : puzzle.value.unencryptedContent.image_url || "locked.jpg",
 );
 const title = computed(() =>
     locked.value === true
         ? "Locked Challenge"
-        : props.puzzle.unencryptedContent.title || "Unknown Challenge",
+        : puzzle.value.unencryptedContent.title || "Unknown Challenge",
 );
 const teaser = computed(() =>
     locked.value === true
         ? "Can you unlock it?"
-        : props.puzzle.unencryptedContent.description || "What is it?",
+        : puzzle.value.unencryptedContent.description || "What is it?",
 );
-const countdown = computed(() =>
+
+const unlockDate =
+    puzzle.value.metadata.unlockDate === undefined
+        ? false
+        : new Date(puzzle.value.metadata.unlockDate);
+
+const countdown =
     unlockDate === false
         ? "No automatic unlock."
-        : "Automatic unlock on " + unlockDate.toLocaleDateString() + ".",
-);
+        : "Automatic unlock on " + unlockDate.toLocaleDateString() + ".";
 
 function openPuzzle() {
     puzzleActive.value = true;
@@ -108,11 +100,10 @@ function openPuzzle() {
 }
 
 function handleSolve(userSolution) {
-    // Placeholder function to solve the puzzle
-    const checkString = decrypt(props.puzzle.answerCheck, userSolution);
+    const checkString = decrypt(puzzle.value.answerCheck, userSolution);
 
-    const currentChallenge = props.puzzle.metadata.challenge;
-    const currentPuzzle = props.puzzle.metadata.id;
+    const currentChallenge = puzzle.value.metadata.challenge;
+    const currentPuzzle = puzzle.value.metadata.id;
     const nextPuzzle = challenges.value[currentChallenge].puzzles[
         currentPuzzle + 1
     ]
@@ -124,15 +115,13 @@ function handleSolve(userSolution) {
         solved.value = true;
         errorMessage.value = "";
 
-        challenges.value[currentChallenge].puzzles[
-            currentPuzzle
-        ].metadata.solved = true;
-        challenges.value[currentChallenge].puzzles[
-            currentPuzzle
-        ].metadata.answer = userSolution;
-
-        // Close the puzzle
-        puzzleActive.value = false;
+        // Update the solved state and answer
+        challenges.value[currentChallenge].puzzles[currentPuzzle].metadata = {
+            ...challenges.value[currentChallenge].puzzles[currentPuzzle]
+                .metadata,
+            solved: true,
+            answer: userSolution,
+        };
 
         // Unencrypt the next puzzle
         if (
@@ -150,9 +139,19 @@ function handleSolve(userSolution) {
             const unencryptedContent = JSON.parse(
                 decrypt(encryptedContent, unencryptedSecret),
             );
-            challenges.value[currentChallenge].puzzles[
-                nextPuzzle
-            ].unencryptedContent = unencryptedContent;
+
+            if (unencryptedContent.image_url) {
+                unencryptedContent.image_url = new URL(
+                    `../assets/images/${unencryptedContent.image_url}`,
+                    import.meta.url,
+                ).href;
+            }
+
+            // Replace the next puzzle's unencryptedContent
+            challenges.value[currentChallenge].puzzles[nextPuzzle] = {
+                ...challenges.value[currentChallenge].puzzles[nextPuzzle],
+                unencryptedContent,
+            };
         }
     } else {
         errorMessage.value = "Solution is incorrect, try again.";

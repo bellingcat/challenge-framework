@@ -9,11 +9,13 @@
         "format": "prettier --write ."
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^6.7.2",
         "@mdi/font": "7.4.47",
         "@vueuse/core": "^11.2.0",
         "crypto-js": "^4.2.0",
         "roboto-fontface": "*",
         "vue": "^3.4.31",
+        "vue3-social-sharing": "^1.4.1",
         "vuetify": "^3.6.11",
         "yaml-front-matter": "^4.1.1"
     },
